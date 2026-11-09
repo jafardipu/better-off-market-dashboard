@@ -53,6 +53,7 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData & { fcmToken?: string }) => {
     const fcmToken = await getFcmToken();
+    console.log("fcmToken", fcmToken);
     if (fcmToken) data.fcmToken = fcmToken;
     try {
       const res = await login(data).unwrap();
@@ -69,6 +70,7 @@ export default function LoginForm() {
         }),
       );
 
+      return
       toast.success("Login successful!");
       if (callbackUrl) router.replace(callbackUrl);
       else router.push("/dashboard");
