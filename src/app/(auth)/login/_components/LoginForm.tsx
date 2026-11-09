@@ -53,7 +53,7 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginFormData & { fcmToken?: string }) => {
     const fcmToken = await getFcmToken();
-    console.log("fcmToken", fcmToken);
+
     if (fcmToken) data.fcmToken = fcmToken;
     try {
       const res = await login(data).unwrap();
@@ -70,7 +70,7 @@ export default function LoginForm() {
         }),
       );
 
-      return
+
       toast.success("Login successful!");
       if (callbackUrl) router.replace(callbackUrl);
       else router.push("/dashboard");
@@ -101,7 +101,7 @@ export default function LoginForm() {
 
       {/* Title and Subtitle */}
       <h1 className="mb-2 text-center lg:text-3xl md:text-2xl text-xl font-bold text-gray-900">
-        Welcome Back  
+        Welcome Back
       </h1>
       <p className="mb-6 text-center">Sign in to your account</p>
 
