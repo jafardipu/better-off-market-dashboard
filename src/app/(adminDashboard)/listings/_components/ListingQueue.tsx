@@ -3,9 +3,10 @@ import Preview from "@/components/shared/utils/image_preview_option";
 import ImagePreviewer from "@/components/shared/utils/images-previewer";
 import {
   useApprovePropertyMutation,
+  useDeletePropertyMutation,
   useRejectPropertyMutation,
 } from "@/redux/api/propertiesApi";
-import { Image, Popconfirm, message } from "antd";
+import { Popconfirm, message } from "antd";
 import {
   AlertCircleIcon,
   CalendarIcon,
@@ -103,11 +104,13 @@ export function ListingQueue({
 }
 
 function ListingCard({ listing }: { listing: ListingItem }) {
-   const [previewImgIndex, setPreviewImgIndex] = useState(-1);
+  const [previewImgIndex, setPreviewImgIndex] = useState(-1);
   const [approveProperty, { isLoading: isApproving }] =
     useApprovePropertyMutation();
   const [rejectProperty, { isLoading: isRejecting }] =
     useRejectPropertyMutation();
+  const [deleteProperty, { isLoading: isDeleting }] =
+    useDeletePropertyMutation();
 
   const handleApprove = async () => {
     try {
@@ -124,6 +127,15 @@ function ListingCard({ listing }: { listing: ListingItem }) {
       message.success("Listing rejected");
     } catch (err: any) {
       message.error(err?.data?.message || "Failed to reject listing");
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteProperty(listing.id).unwrap();
+      message.success("Listing deleted successfully");
+    } catch (err: any) {
+      message.error(err?.data?.message || "Failed to delete listing");
     }
   };
 
@@ -203,7 +215,7 @@ function ListingCard({ listing }: { listing: ListingItem }) {
                 onConfirm={handleApprove}
               >
                 <button
-                  disabled={isApproving || isRejecting}
+                  disabled={isApproving || isRejecting || isDeleting}
                   className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${ACTION_STYLES.primary}`}
                 >
                   Approve
@@ -219,7 +231,7 @@ function ListingCard({ listing }: { listing: ListingItem }) {
                 onConfirm={handleReject}
               >
                 <button
-                  disabled={isApproving || isRejecting}
+                  disabled={isApproving || isRejecting || isDeleting}
                   className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${ACTION_STYLES["danger-outline"]}`}
                 >
                   Reject
@@ -227,6 +239,22 @@ function ListingCard({ listing }: { listing: ListingItem }) {
               </Popconfirm>
             </>
           )}
+
+          <Popconfirm
+            title="Delete this listing?"
+            description="This permanently removes the listing. This cannot be undone."
+            okText="Delete"
+            cancelText="Cancel"
+            okButtonProps={{ danger: true, loading: isDeleting }}
+            onConfirm={handleDelete}
+          >
+            <button
+              disabled={isApproving || isRejecting || isDeleting}
+              className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${ACTION_STYLES["danger-outline"]}`}
+            >
+              Delete
+            </button>
+          </Popconfirm>
         </div>
       </div>
 

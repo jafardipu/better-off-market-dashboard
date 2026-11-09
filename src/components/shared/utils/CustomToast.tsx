@@ -4,8 +4,7 @@ import type React from "react";
 
 import { X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-// import { useGetNotificationsQuery } from "@/redux/api/notificationApi";
+import { useEffect, useState } from "react";
 
 type TCustomToastProps = {
   title?: string;
@@ -35,18 +34,19 @@ const CustomToast = ({
   };
 
   // Auto-dismiss after duration
-  useState(() => {
-    if (duration > 0) {
-      const timer = setTimeout(() => {
-        setIsExiting(true);
-        setTimeout(() => {
-          setIsVisible(false);
-          onClose?.();
-        }, 200);
-      }, duration);
-      return () => clearTimeout(timer);
-    }
-  });
+  useEffect(() => {
+    if (duration <= 0) return;
+
+    const timer = setTimeout(() => {
+      setIsExiting(true);
+      setTimeout(() => {
+        setIsVisible(false);
+        onClose?.();
+      }, 200);
+    }, duration);
+
+    return () => clearTimeout(timer);
+  }, [duration, onClose]);
 
   if (!isVisible) return null;
 

@@ -2,13 +2,13 @@
 import { initializeApp, getApps } from "firebase/app";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDLf0Wzys9fFvnoJ8xLYUxanbtSrWcHmXM",
-  authDomain: "betteroffmarket-4e241.firebaseapp.com",
-  projectId: "betteroffmarket-4e241",
-  storageBucket: "betteroffmarket-4e241.firebasestorage.app",
-  messagingSenderId: "670954792583",
-  appId: "1:670954792583:web:4b48763c8b8eaea461fa22",
-  measurementId: "G-DB8WLZZ7FR"
+  apiKey: "AIzaSyC4c53R5qCDYZ2Jj7A1Ps7pRJcqKIoEZ-M",
+  authDomain: "better-off-market-project.firebaseapp.com",
+  projectId: "better-off-market-project",
+  storageBucket: "better-off-market-project.firebasestorage.app",
+  messagingSenderId: "541953855584",
+  appId: "1:541953855584:web:b370a0b21448c554ee3305",
+  measurementId: "G-7JTZGTCY17"
 };
 
 

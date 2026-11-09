@@ -39,9 +39,7 @@ export default function PropertyContainer({
           />
         </div>
         <div className="lg:col-span-2 md:flex flex-wrap lg:flex-col gap-4 space-y-4">
-          {property?.status === "Pending" && (
-            <AdminDecisionCard property={property} />
-          )}
+          <AdminDecisionCard property={property} />
 
           <ProfileCard seller={property?.seller} />
         </div>

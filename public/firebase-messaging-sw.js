@@ -1,44 +1,75 @@
-// eslint-disable-next-line no-undef
-importScripts("https://www.gstatic.com/firebasejs/8.8.0/firebase-app.js");
-// eslint-disable-next-line no-undef
-importScripts("https://www.gstatic.com/firebasejs/8.8.0/firebase-messaging.js");
+/* eslint-disable no-undef */
+importScripts(
+  "https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js",
+);
+importScripts(
+  "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging-compat.js",
+);
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDLf0Wzys9fFvnoJ8xLYUxanbtSrWcHmXM",
-  authDomain: "betteroffmarket-4e241.firebaseapp.com",
-  projectId: "betteroffmarket-4e241",
-  storageBucket: "betteroffmarket-4e241.firebasestorage.app",
-  messagingSenderId: "670954792583",
-  appId: "1:670954792583:web:4b48763c8b8eaea461fa22",
-  measurementId: "G-DB8WLZZ7FR"
+  apiKey: "AIzaSyC4c53R5qCDYZ2Jj7A1Ps7pRJcqKIoEZ-M",
+  authDomain: "better-off-market-project.firebaseapp.com",
+  projectId: "better-off-market-project",
+  storageBucket: "better-off-market-project.firebasestorage.app",
+  messagingSenderId: "541953855584",
+  appId: "1:541953855584:web:b370a0b21448c554ee3305",
+  measurementId: "G-7JTZGTCY17"
 };
-// eslint-disable-next-line no-undef
+
 firebase.initializeApp(firebaseConfig);
-// eslint-disable-next-line no-undef
+
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  const notificationTitle = payload.notification.title;
+  const notificationTitle =
+    payload.notification?.title ||
+    payload.data?.title ||
+    payload.data?.message ||
+    "New notification";
+
+  const notificationBody =
+    payload.notification?.body ||
+    payload.data?.body ||
+    payload.data?.description ||
+    "";
+
   const notificationOptions = {
-    body: payload.notification.body,
+    body: notificationBody,
     icon: "./logo.png",
     badge: "./logo.png",
     data: {
-      url: payload.data?.url || "/notifications",
+      url: payload.data?.url || payload.data?.link || "/notifications",
     },
     vibrate: [100, 50, 100],
-    sound: "default",
     tag: "notification",
     renotify: true,
     requireInteraction: true,
-    silent: false,
-    actions: [
-      { action: "open", title: "Open" },
-      { action: "close", title: "Close" },
-    ],
-    notification: {
-      requireInteraction: true,
-    },
   };
+
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const targetUrl = event.notification?.data?.url || "/notifications";
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if ("focus" in client) {
+            client.focus();
+            if ("navigate" in client) {
+              return client.navigate(targetUrl);
+            }
+            return;
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(targetUrl);
+        }
+      }),
+  );
 });

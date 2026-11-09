@@ -33,7 +33,7 @@ export default function LoginForm() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [login, { isLoading }] = useLoginMutation();
-  const { fcmToken } = useFcmToken();
+  const { getFcmToken } = useFcmToken();
 
   const callbackUrl = useSearchParams().get("callbackUrl");
 
@@ -52,6 +52,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormData & { fcmToken?: string }) => {
+    const fcmToken = await getFcmToken();
     if (fcmToken) data.fcmToken = fcmToken;
     try {
       const res = await login(data).unwrap();
