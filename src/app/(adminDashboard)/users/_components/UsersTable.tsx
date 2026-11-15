@@ -59,9 +59,9 @@ const UsersTable = () => {
                 backgroundColor: record.profile
                   ? undefined
                   : avatarColors[
-                      Math.floor(Math.random() * avatarColors.length) %
-                        avatarColors.length
-                    ],
+                  Math.floor(Math.random() * avatarColors.length) %
+                  avatarColors.length
+                  ],
                 color: "#1e3a8a",
                 fontWeight: 600,
               }}
@@ -128,6 +128,13 @@ const UsersTable = () => {
               View
             </button>
             <BlockUser id={record?._id} isActive={record.status === "active"} />
+            <Link href={`/user-messages?user=${record?._id}`}>
+              <button
+                className={`transition-transform duration-300 hover:scale-105 text-green-700 }`}
+              >
+                Messages
+              </button>
+            </Link>
           </div>
         );
       },

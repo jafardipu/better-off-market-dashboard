@@ -36,7 +36,7 @@ const DataTable = ({
           : false
       }
       scroll={{ x: "max-content" }}
-      rowKey={(record) => record.id || record.key} // always good to add rowKey
+      rowKey={(record) => record.id || record.key} 
     />
   );
 };
