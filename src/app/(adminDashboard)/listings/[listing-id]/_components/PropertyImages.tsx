@@ -113,8 +113,8 @@ export default function PropertyImages({
             </Preview>
             {propertyImages[5] && (
               <div
-                onClick={() => setPreviewImgIndex(5)}
-                className="bg-white/90 flex items-center gap-1 absolute bottom-4 right-4 px-2 py-1.5 text-sm font-medium rounded-md z-999 cursor-pointer"
+                onClick={() => setPreviewImgIndex(0)}
+                className="bg-white/90 flex items-center gap-1 absolute bottom-4 right-4 px-2 py-1.5 text-sm font-medium rounded-md z-999 cursor-pointer z-20"
               >
                 <LayoutGrid size={16} /> Show all photos
               </div>
