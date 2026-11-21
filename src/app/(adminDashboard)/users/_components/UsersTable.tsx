@@ -51,7 +51,7 @@ const UsersTable = () => {
               alt={record.name}
               width={40}
               height={40}
-              className="w-10 h-10 !rounded-full"
+              className="w-10 h-10 !rounded-full object-cover"
             />
           ) : (
             <span
@@ -91,7 +91,7 @@ const UsersTable = () => {
     },
     {
       title: "Joined",
-      dataIndex: "cratedAt",
+      dataIndex: "createdAt",
       render: (text) => (
         <p className="text-gray-500">{moment(text).format("MMM DD, YYYY")}</p>
       ),

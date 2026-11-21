@@ -1,6 +1,9 @@
-import { de } from "zod/v4/locales";
 import { tagTypes } from "../tagTypes";
 import { baseApi } from "./baseApi";
+
+export type ReorderFaqsPayload = {
+  orders: { id: string; order: number }[];
+};
 
 const faqsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -35,6 +38,14 @@ const faqsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.faqs],
     }),
+    reorderFaqs: build.mutation({
+      query: (data: ReorderFaqsPayload) => ({
+        url: "/faqs/reorder",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: [tagTypes.faqs],
+    }),
   }),
 });
 
@@ -43,4 +54,5 @@ export const {
   useCreateFaqMutation,
   useDeleteFaqMutation,
   useUpdateFaqMutation,
+  useReorderFaqsMutation,
 } = faqsApi;

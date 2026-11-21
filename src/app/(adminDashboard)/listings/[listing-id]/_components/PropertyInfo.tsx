@@ -1,6 +1,7 @@
 import { PropertySpecificationsIcon } from "@/icon";
 import { HomeIcon, ClosingPreferencesIcon, MajorComponentsIcon } from "@/icon";
 import { IPropertyResponse } from "@/types";
+import { priceFormatter } from "@/utils/priceFormatter";
 
 interface SpecItem {
   label: string;
@@ -58,11 +59,21 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
       .replace(/([a-z0-9])([A-Z])/g, "$1 $2") // camelCase -> camel Case
       .replace(/^./, (str) => str.toUpperCase()); // capitalize first letter
 
+  const CURRENCY_SPEC_KEYS = new Set(["totalRent", "avgRentPerUnit"]);
+
+  const formatSpecValue = (key: string, value: unknown) => {
+    if (CURRENCY_SPEC_KEYS.has(key)) {
+      const amount = Number(value);
+      if (Number.isFinite(amount)) return priceFormatter.format(amount);
+    }
+    return String(value);
+  };
+
   const propertySpecsLeft = Object.entries(property?.specifications ?? {})
     .filter(([, value]) => Boolean(value))
     .map(([key, value]) => ({
       label: formatCamelCaseToLabel(key),
-      value: String(value),
+      value: formatSpecValue(key, value),
       note: key === "lotSize" ? "Acres" : undefined,
     }));
 

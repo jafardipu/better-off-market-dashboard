@@ -1,6 +1,11 @@
 import { Boxes, Building, Calendar, Cuboid, LandPlot } from "lucide-react";
 import { AreaIcon, BedIcon, ShawarIcon } from "@/icon";
+import { priceFormatter } from "@/utils/priceFormatter";
 
+const formatCurrencySpec = (value: unknown) => {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? priceFormatter.format(amount) : value;
+};
 
 export const handlePropertiesSpecifications = (
   propertyType: string,
@@ -45,7 +50,7 @@ export const handlePropertiesSpecifications = (
         },
         {
           // icon: ShawarIcon,
-          value: `$${specifications?.totalRent}`,
+          value: formatCurrencySpec(specifications?.totalRent),
           suffix: "Rent",
           label: "Total Rent",
         },

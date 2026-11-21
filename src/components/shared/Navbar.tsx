@@ -21,6 +21,7 @@ import { useGetMyProfileQuery } from "@/redux/api/profileApi";
 import { useGetNotificationQuery } from "@/redux/api/notificationApi";
 import { useEffect, useState } from "react";
 import { INotification } from "../(adminDashboard)/Notifications/NotificationContainer";
+import { getInitials } from "@/utils/getInitials";
 
 type TNavbarProps = {
   collapsed: boolean;
@@ -97,7 +98,9 @@ const Navbar = ({ collapsed, setCollapsed }: TNavbarProps) => {
                     src={data?.data?.profile}
                     size={40}
                     className="size-12"
-                  ></Avatar>
+                  >
+                    {getInitials(data?.data?.name || "")}
+                  </Avatar>
                 </div>
               )}
             </MenubarTrigger>
