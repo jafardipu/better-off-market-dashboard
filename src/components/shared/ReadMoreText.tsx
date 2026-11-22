@@ -12,11 +12,18 @@ interface ReadMoreTextProps {
 
 /** Truncate by word count while keeping original newlines/spacing up to that point. */
 function truncatePreservingWhitespace(text: string, wordLimit: number) {
-  const matches = [...text.matchAll(/\S+/g)];
+  const matches: RegExpExecArray[] = [];
+  const wordRegex = /\S+/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = wordRegex.exec(text)) !== null) {
+    matches.push(match);
+  }
+
   if (matches.length <= wordLimit) return text;
 
   const last = matches[wordLimit - 1];
-  const end = (last.index ?? 0) + last[0].length;
+  const end = last.index + last[0].length;
   return `${text.slice(0, end)}...`;
 }
 
