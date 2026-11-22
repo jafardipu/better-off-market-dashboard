@@ -20,10 +20,10 @@ interface RawSupportingDocument {
 }
 
 interface OffersSentProps {
-  property: IPropertyResponse;
+  property: IPropertyResponse | null;
   seller: IUser;
   buyer: IUser;
-  propertyId: string;
+  propertyId?: string;
   propertyLabel: string;
   history: OfferHistoryEntry[];
   currentRound: number;
@@ -68,7 +68,13 @@ export function OffersSent({
 
   return (
     <div>
-      <OfferPropertyCard property={property} className="mb-2" />
+      {property ? (
+        <OfferPropertyCard property={property} className="mb-2" />
+      ) : (
+        <div className="mb-2 rounded-lg border border-[#E0E3E5] bg-[#F2F4F6] px-4 py-5 text-sm text-primary-gray">
+          This listing is no longer available.
+        </div>
+      )}
       <OffersSentHeader propertyId={propertyId} propertyLabel={propertyLabel} />
 
       <OfferComparisonRow

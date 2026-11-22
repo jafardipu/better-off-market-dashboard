@@ -1,7 +1,5 @@
 "use client";
-import {
-  useGetSingleOfferQuery,
-} from "@/redux/api/offerApi";
+import { useGetSingleOfferQuery } from "@/redux/api/offerApi";
 import { useParams } from "next/navigation";
 import { OffersSent } from "./OffersSent";
 import { Empty } from "antd";
@@ -19,15 +17,18 @@ export default function ReviewSentOfferContainer() {
     return <OffersDetailsPageSkeleton />;
   }
 
-  if (!offer) return <Empty className="mt-16" />;
+  if (!offer) return <Empty className="mt-16" description="Offer not found" />;
 
-  const { seller, buyer, property, history, currentRound, supportingDocuments } = offer;
+  const { seller, buyer, property, history, currentRound, supportingDocuments } =
+    offer;
 
-  const propertyLabel = `${property.propertyType} — ${property.streetAddress},  ${property.city}, ${property.state}, ${property.zipCode}, ${property.county}`;
+  const propertyLabel = property
+    ? `${property.propertyType} — ${property.streetAddress}, ${property.city}, ${property.state}, ${property.zipCode}, ${property.county}`
+    : "Listing unavailable";
 
   return (
     <OffersSent
-      property={property}
+      property={property ?? null}
       seller={seller}
       buyer={buyer}
       propertyId={property?._id}

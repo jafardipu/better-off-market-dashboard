@@ -193,7 +193,7 @@ export interface IOfferHistoryEntry extends IOfferTerms {
 
 export interface IOffer {
   _id: string;
-  property: IPropertyResponse;
+  property: IPropertyResponse | null;
   buyer: IUser;
   seller: IUser;
 
