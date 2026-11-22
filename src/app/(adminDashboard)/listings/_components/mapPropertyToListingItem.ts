@@ -84,9 +84,7 @@ export function mapPropertyToListingItem(property: RawProperty): ListingItem {
       ", " +
       property?.state +
       ", " +
-      property?.zipCode +
-      ", " +
-      property.county,
+      property?.zipCode,
     agentName: property.seller?.name ?? "Unknown seller",
     county: property.county,
     submittedDate: formatSubmittedDate(property.createdAt),

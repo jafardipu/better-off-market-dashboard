@@ -139,3 +139,5 @@ export function BasicPropertyDetails({ property }: PropertyListingProps) {
     </div>
   );
 }
+
+

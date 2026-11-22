@@ -20,9 +20,9 @@ export const navLinks = [
     label: <Link href={"/listings"}>Listings</Link>,
   },
   {
-    key: "orders",
+    key: "offers",
     icon: <Logs size={18} />,
-    label: <Link href={"/orders"}>Offers</Link>,
+    label: <Link href={"/offers"}>Offers</Link>,
   },
   {
     key: "user-messages",
