@@ -141,6 +141,43 @@ export interface IPropertyResponse {
 }
 
 
+// Property contract: saved when a seller marks a listing "Under Contract".
+// Every key is always present; optional values are null.
+export interface IPropertyContractProperty {
+  _id: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  county: string;
+  propertyType: string;
+  listingPrice: number;
+  photos: string[];
+  status: TPropertyStatus;
+}
+
+export interface IPropertyContractSeller {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber: string | null;
+  profile: string | null;
+}
+
+export interface IPropertyContract {
+  _id: string;
+  buyerName: string | null;
+  // Stored as UTC midnight: format from the UTC date, never local time.
+  closingDate: string | null;
+  titleCompany: string | null;
+  previousStatus: TPropertyStatus;
+  createdAt: string;
+  updatedAt: string;
+  property: IPropertyContractProperty;
+  // null when the seller's account record no longer exists.
+  seller: IPropertyContractSeller | null;
+}
+
 export type OfferStatus =
   | "pending"
   | "countered"

@@ -12,13 +12,16 @@ import Empty from "@/components/ui/empty-data";
 import { useEffect } from "react";
 import Link from "next/link";
 import { Tooltip } from "antd";
+import { getNotificationLink } from "@/utils/notificationLink";
 
 export interface INotification {
   _id: string;
+  type?: string;
   message: string;
   description: string;
   read: boolean;
   link: string;
+  metadata?: { contractId?: string; propertyId?: string };
   createdAt: string;
 }
 
@@ -56,7 +59,13 @@ const NotificationContainer = () => {
               {data?.data?.map((notification: INotification) => (
                 <Link
                   key={notification?._id}
-                  href={notification?.link ? `${notification?.link}` : `#`}
+                  href={
+                    getNotificationLink({
+                      link: notification?.link,
+                      type: notification?.type,
+                      contractId: notification?.metadata?.contractId,
+                    }) ?? "#"
+                  }
                   className="block"
                 >
                   <div className="flex items-center gap-x-4">

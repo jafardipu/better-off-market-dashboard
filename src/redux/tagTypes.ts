@@ -8,6 +8,7 @@ export const tagTypes = {
   content: "Content",
   faqs: "Faqs",
   notifications: "Notifications",
+  propertyContracts: "PropertyContracts",
 };
 
 export const tagTypesList = [
@@ -20,4 +21,5 @@ export const tagTypesList = [
   tagTypes.content,
   tagTypes.faqs,
   tagTypes.notifications,
+  tagTypes.propertyContracts,
 ];

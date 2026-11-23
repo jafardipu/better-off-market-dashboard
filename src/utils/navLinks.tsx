@@ -1,7 +1,7 @@
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
 import Link from "next/link";
-import { ChartColumn, ListChecks, Logs, Mail, MessagesSquare, Users } from "lucide-react";
+import { ChartColumn, FileSignature, ListChecks, Logs, Mail, MessagesSquare, Users } from "lucide-react";
 
 export const navLinks = [
   {
@@ -23,6 +23,11 @@ export const navLinks = [
     key: "offers",
     icon: <Logs size={18} />,
     label: <Link href={"/offers"}>Offers</Link>,
+  },
+  {
+    key: "property-contracts",
+    icon: <FileSignature size={18} />,
+    label: <Link href={"/property-contracts"}>Property Contracts</Link>,
   },
   {
     key: "user-messages",

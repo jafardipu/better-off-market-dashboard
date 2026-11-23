@@ -7,6 +7,10 @@ import { useAppDispatch } from "@/redux/hooks";
 import CustomToast from "@/components/shared/utils/CustomToast";
 import notificationApi from "@/redux/api/notificationApi";
 import { getFcmMessaging } from "@/lib/firebase/messaging-client";
+import {
+  getNotificationLink,
+  NOTIFICATION_TYPES,
+} from "@/utils/notificationLink";
 
 const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
@@ -34,11 +38,24 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
             payload.notification?.body ||
             payload.data?.body ||
             payload.data?.description;
-          const url = payload.data?.url || payload.data?.link || "/notifications";
+          const url =
+            getNotificationLink({
+              url: payload.data?.url,
+              link: payload.data?.link,
+              type: payload.data?.type,
+              contractId: payload.data?.contractId,
+            }) ?? "/notifications";
 
-          // Always refresh notification list / unread badge
+          const isPropertyContract =
+            payload.data?.type === NOTIFICATION_TYPES.propertyUnderContract;
+
+          // Always refresh notification list / unread badge, plus the
+          // contracts table when a new contract arrives.
           dispatch(
-            notificationApi.util.invalidateTags([tagTypes.notifications]),
+            notificationApi.util.invalidateTags([
+              tagTypes.notifications,
+              ...(isPropertyContract ? [tagTypes.propertyContracts] : []),
+            ]),
           );
 
           if (!title && !body) return;

@@ -20,6 +20,18 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging = firebase.messaging();
 
+// Mirrors getNotificationLink in src/utils/notificationLink.ts.
+const getNotificationUrl = (data = {}) => {
+  if (data.url) return data.url;
+  if (data.link) return data.link;
+  if (data.type === "PROPERTY_UNDER_CONTRACT" && data.contractId) {
+    return (
+      "/property-contracts?contractId=" + encodeURIComponent(data.contractId)
+    );
+  }
+  return "/notifications";
+};
+
 messaging.onBackgroundMessage((payload) => {
   const notificationTitle =
     payload.notification?.title ||
@@ -38,7 +50,7 @@ messaging.onBackgroundMessage((payload) => {
     icon: "./logo.png",
     badge: "./logo.png",
     data: {
-      url: payload.data?.url || payload.data?.link || "/notifications",
+      url: getNotificationUrl(payload.data),
     },
     vibrate: [100, 50, 100],
     tag: "notification",
