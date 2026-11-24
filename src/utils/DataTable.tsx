@@ -11,6 +11,8 @@ const DataTable = ({
   total,
   isLoading,
   emptyText,
+  currentPage,
+  onPageChange,
 }: {
   columns: any;
   data: any;
@@ -18,6 +20,10 @@ const DataTable = ({
   total?: number;
   isLoading?: boolean;
   emptyText?: ReactNode;
+  // Pass both to keep the page in component state instead of ?page, e.g. a
+  // table embedded in a page that has its own paginated list.
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
 }) => {
   const updateParams = useUpdateSearchParams();
   const page = useSearchParams()?.get("page") || "1";
@@ -33,10 +39,11 @@ const DataTable = ({
               pageSize,
               // Controlled by the URL so resetting ?page (search, filters,
               // back button) moves the pager too.
-              current: Number(page) || 1,
+              current: currentPage ?? (Number(page) || 1),
               total: total ?? data?.length,
               onChange: (page) => {
-                updateParams({ page: page.toString()});
+                if (onPageChange) onPageChange(page);
+                else updateParams({ page: page.toString() });
               },
             }
           : false

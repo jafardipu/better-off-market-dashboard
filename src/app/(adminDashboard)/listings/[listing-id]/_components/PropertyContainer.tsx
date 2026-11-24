@@ -8,6 +8,7 @@ import { AdminDecisionCard } from "./AdminDecisionCard";
 import { IPropertyResponse } from "@/types";
 import { BasicPropertyDetails } from "./BasicPropertyDetails";
 import ProfileCard from "@/components/shared/ProfileCard";
+import { BuyerActivitySection } from "./BuyerActivitySection";
 
 export default function PropertyContainer({
   property,
@@ -44,6 +45,13 @@ export default function PropertyContainer({
           <ProfileCard seller={property?.seller} />
         </div>
       </div>
+
+      {/* NEW FLOW: buyer activity on this listing (full width: wide table). */}
+      {property?._id && (
+        <div className="mt-6">
+          <BuyerActivitySection propertyId={property._id} />
+        </div>
+      )}
     </div>
   );
 }

@@ -176,6 +176,70 @@ export interface IPropertyContract {
   property: IPropertyContractProperty;
   // null when the seller's account record no longer exists.
   seller: IPropertyContractSeller | null;
+
+  // NEW FLOW: buyer-contact certification and platform activity check.
+  // Optional because contracts saved before this change don't have them.
+  source?: TContractSource | null;
+  // The accepted offer (id or populated) when source is "offer_accepted".
+  offer?: string | { _id: string } | null;
+  // Set when the buyer is a BetterOffMarket user; otherwise only buyerName
+  // (typed by the seller) is known.
+  buyer?: IBuyerActivityBuyer | null;
+  buyerContactSource?: TBuyerContactSource | null;
+  certifiedAt?: string | null;
+  // This buyer's activity on this property.
+  buyerActivity?: Partial<IBuyerActivityTimestamps> | null;
+  hasPlatformActivity?: boolean;
+  // The seller answered independent/unsure, but the buyer has activity on
+  // this listing.
+  needsReview?: boolean;
+}
+
+// NEW FLOW: buyer activity tracking.
+// How the property went Under Contract.
+export type TContractSource = "offer_accepted" | "manual";
+
+// The seller's answer to how the buyer first contacted them. Missing on
+// contracts submitted before the question existed.
+export type TBuyerContactSource = "betteroffmarket" | "independent" | "unsure";
+
+// The first time a buyer did each thing on a listing; null if never.
+export interface IBuyerActivityTimestamps {
+  firstViewedAt: string | null;
+  firstSavedAt: string | null;
+  firstRsvpAt: string | null;
+  firstMessagedSellerAt: string | null;
+  firstOfferSubmittedAt: string | null;
+  firstNegotiationAt: string | null;
+}
+
+export interface IBuyerActivityBuyer {
+  _id: string;
+  name: string;
+  email: string;
+  phoneNumber?: string | null;
+  profile?: string | null;
+}
+
+// One buyer + one listing.
+export interface IBuyerActivity extends IBuyerActivityTimestamps {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  // null only if the account or listing record no longer exists.
+  buyer: IBuyerActivityBuyer | null;
+  property: Pick<
+    IPropertyContractProperty,
+    "_id" | "streetAddress" | "city" | "state" | "zipCode" | "status" | "photos"
+  > | null;
+  seller: { _id: string; name: string; email: string } | null;
+  // The property contract for this listing, if the seller submitted one.
+  contract: {
+    _id: string;
+    buyerContactSource: TBuyerContactSource | null;
+    certifiedAt: string | null;
+    createdAt: string;
+  } | null;
 }
 
 export type OfferStatus =

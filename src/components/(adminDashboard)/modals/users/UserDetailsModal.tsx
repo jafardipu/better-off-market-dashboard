@@ -7,6 +7,7 @@ import { Image, Modal, Tag } from "antd";
 import { Mail, Phone, X } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
+import { userProfileHref } from "@/components/(adminDashboard)/property-records/format";
 
 const avatarColors = ["#DCE6FF", "#FFE1D6"];
 
@@ -135,6 +136,13 @@ export function UserDetailsModal({
       <Link href={`/seller-profile?seller=${selectedUser?._id}`}>
         <Button className="mt-4 w-full bg-main-color hover:bg-main-color/70">
           View Seller Profile
+        </Button>
+      </Link>
+
+      {/* NEW FLOW: buyer activity tab on the user's profile page. */}
+      <Link href={userProfileHref(selectedUser?._id ?? "", "buyer-activity")}>
+        <Button variant="outline" className="mt-3 w-full">
+          View Buyer Activity
         </Button>
       </Link>
     </Modal>

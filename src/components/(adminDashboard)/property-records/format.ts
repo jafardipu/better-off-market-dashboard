@@ -1,3 +1,4 @@
+// Formatting shared by Property Contracts and Buyer Activity.
 import { IPropertyContractProperty, TPropertyStatus } from "@/types";
 import { priceFormatter } from "@/utils/priceFormatter";
 import moment from "moment";
@@ -11,6 +12,14 @@ export const PROPERTY_STATUSES: TPropertyStatus[] = [
   "Sold",
   "Rejected",
 ];
+
+// The address fields both property shapes share.
+export type TPropertyAddress = Partial<
+  Pick<
+    IPropertyContractProperty,
+    "_id" | "streetAddress" | "city" | "state" | "zipCode" | "photos"
+  >
+>;
 
 export const displayValue = (value?: string | null) =>
   value && value.trim() ? value : EMPTY_VALUE;
@@ -28,6 +37,12 @@ export const formatUtcDate = (iso?: string | null) => {
 export const formatLocalDate = (iso?: string | null) =>
   iso && moment(iso).isValid() ? moment(iso).format("MM-DD-YYYY") : EMPTY_VALUE;
 
+// NEW FLOW: activity and certification timestamps, in local time.
+export const formatDateTime = (iso?: string | null) =>
+  iso && moment(iso).isValid()
+    ? moment(iso).format("MM-DD-YYYY h:mm A")
+    : EMPTY_VALUE;
+
 const priceWithCentsFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -42,7 +57,7 @@ export const formatPrice = (value?: number | null) => {
 };
 
 // "city, state ZIP"
-export const formatCityLine = (property?: IPropertyContractProperty | null) => {
+export const formatCityLine = (property?: TPropertyAddress | null) => {
   const cityState = [property?.city, property?.state]
     .filter((part) => part && part.trim())
     .join(", ");
@@ -51,3 +66,7 @@ export const formatCityLine = (property?: IPropertyContractProperty | null) => {
     .join(" ");
   return line || EMPTY_VALUE;
 };
+
+// The user profile page (it works for buyers too, despite the route name).
+export const userProfileHref = (userId: string, tab?: "buyer-activity") =>
+  `/seller-profile?seller=${encodeURIComponent(userId)}${tab ? `&tab=${tab}` : ""}`;

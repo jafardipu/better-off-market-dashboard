@@ -72,6 +72,7 @@ Pagination and filter state lives in URL search params, not in component state:
 
 - Tables read `page` and `limit` with `useSearchParams()`, debounce search input with `use-debounce`, and pass the result as `params` to the RTK query hook.
 - `src/utils/DataTable.tsx` wraps the antd `Table` and writes page changes back to the URL through `useUpdateSearchParams` (`src/hooks/useUpdateSearchParams.tsx`).
+- A table embedded in another page (e.g. Buyer Activity on a listing or profile) passes `currentPage`/`onPageChange` to `DataTable` to keep its page in state; otherwise it would move the host page's own `?page`.
 
 ### Realtime and notifications
 
@@ -95,6 +96,9 @@ Providers are nested in `src/lib/Provider/Provider.tsx` in this order: Redux, th
   - Generic components go in `src/components/shared/`.
 
 ## Gotchas
+
+- **Contracts / e-signing are disabled on attorney advice.** Anything for agreements, contracts to sign, authorized signers or signed documents gets commented out, never deleted, under `// OLD FLOW (contracts / e-signing) — disabled for now on attorney advice.` (`{/* */}` in JSX). New code for the replacement goes under `// NEW FLOW: <description>`. The replacement is Buyer Activity (first view/save/RSVP/message/offer/negotiation per buyer and listing) plus the seller's certified answer on Property Contracts, which admins use to decide whether the 2% Buyer Platform Fee is owed. Property Contracts itself is not part of the old flow.
+- There is no per-user page except `/seller-profile?seller=<id>`, which works for buyers too (`?tab=buyer-activity` opens that tab). Shared property/person display parts and formatters for Property Contracts and Buyer Activity live in `src/components/(adminDashboard)/property-records/` and `src/components/(adminDashboard)/buyer-activity/`.
 
 - **`offers/` and `orders/` are near-duplicate route trees.**
   - The sidebar links to `/offers` (the list).

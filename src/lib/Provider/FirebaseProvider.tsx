@@ -54,7 +54,9 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
           dispatch(
             notificationApi.util.invalidateTags([
               tagTypes.notifications,
-              ...(isPropertyContract ? [tagTypes.propertyContracts] : []),
+              ...(isPropertyContract
+                ? [tagTypes.propertyContracts, tagTypes.buyerActivities]
+                : []),
             ]),
           );
 

@@ -1,7 +1,7 @@
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
 import Link from "next/link";
-import { ChartColumn, FileSignature, ListChecks, Logs, Mail, MessagesSquare, Users } from "lucide-react";
+import { Activity, ChartColumn, FileSignature, ListChecks, Logs, Mail, MessagesSquare, Users } from "lucide-react";
 
 export const navLinks = [
   {
@@ -28,6 +28,12 @@ export const navLinks = [
     key: "property-contracts",
     icon: <FileSignature size={18} />,
     label: <Link href={"/property-contracts"}>Property Contracts</Link>,
+  },
+  // NEW FLOW: buyer activity tracking.
+  {
+    key: "buyer-activity",
+    icon: <Activity size={18} />,
+    label: <Link href={"/buyer-activity"}>Buyer Activity</Link>,
   },
   {
     key: "user-messages",
