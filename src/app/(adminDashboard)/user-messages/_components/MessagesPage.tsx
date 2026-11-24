@@ -215,10 +215,13 @@ export default function MessagesPage() {
   }, [socket, userId, selectedUser?._id, selectedUser?.chatId]);
 
   // ── Reset thread when switching users; sync chatId when list resolves it ─
+  // Must only run on a user switch: re-running when chatId resolves later
+  // would wipe messages that are already loaded. The new user's chatId is
+  // applied by the sync effect below, which runs after this one.
   useEffect(() => {
     setMessages([]);
     setIsReceiverTyping(false);
-    setChatId(selectedUser?.chatId ?? "");
+    setChatId("");
     pendingSendsRef.current = [];
   }, [selectedUser?._id]);
 

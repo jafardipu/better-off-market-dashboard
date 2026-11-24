@@ -35,7 +35,7 @@ const NotificationContainer = () => {
 
   useEffect(() => {
     makeRedNotification({});
-  }, []);
+  }, [makeRedNotification]);
 
   return (
     <div>

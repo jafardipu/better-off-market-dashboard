@@ -1,36 +1,40 @@
 "use client";
-import { Menu, MenuProps } from "antd";
+import { Menu } from "antd";
 import Sider from "antd/es/layout/Sider";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/logo.png";
 import logoIcon from "@/assets/logo-icon.png";
 import { navLinks } from "@/utils/navLinks";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 
+const NAV_KEYS = new Set(navLinks.map((link) => link.key));
+
+// First URL segment → sidebar key, for routes whose segment isn't the key.
+const ROUTE_NAV_KEYS: Record<string, string> = {
+  orders: "offers", // offer detail pages live under /orders
+  content: "faqs",
+  "personal-information": "settings",
+  "privacy-policy": "settings",
+  "terms-condition": "settings",
+};
+
+const getNavKey = (pathname: string) => {
+  const segment = pathname.split("/")[1] ?? "";
+  const key = ROUTE_NAV_KEYS[segment] ?? segment;
+  return NAV_KEYS.has(key) ? key : undefined;
+};
+
 const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
-  const [current, setCurrent] = useState("dashboard");
   const currentPath = usePathname();
+  const routeKey = getNavKey(currentPath);
 
-  const onClick: MenuProps["onClick"] = (e) => {
-    setCurrent(e.key);
-    if (e.key === "logout") {
-      localStorage.removeItem("activeNav");
-      return;
-    }
-    localStorage.setItem("activeNav", e.key);
-  };
-
-  useEffect(() => {
-    const activeKey = localStorage.getItem("activeNav");
-    if (!activeKey) return;
-    if (activeKey && currentPath !== "/dashboard") {
-      setCurrent(activeKey as string);
-    } else {
-      setCurrent("dashboard");
-    }
-  }, []);
+  // Pages without their own item (notifications, seller profile, ...) keep
+  // the last highlighted item, so the sidebar still shows where you came from.
+  const [lastKey, setLastKey] = useState(routeKey);
+  if (routeKey && routeKey !== lastKey) setLastKey(routeKey);
+  const selectedKey = routeKey ?? lastKey;
 
   return (
     <Sider
@@ -61,9 +65,7 @@ const SidebarContainer = ({ collapsed }: { collapsed: boolean }) => {
         )}
       </div>
       <Menu
-        onClick={onClick}
-        defaultSelectedKeys={["dashboard"]}
-        selectedKeys={[current]}
+        selectedKeys={selectedKey ? [selectedKey] : []}
         mode="inline"
         className="sidebar-menu text-lg bg-main-color"
         items={navLinks}

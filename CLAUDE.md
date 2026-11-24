@@ -54,7 +54,14 @@ Next.js 14 App Router. Almost every page is a client component.
 
 - There is a single `baseApi` (`src/redux/api/baseApi.ts`). Each domain file in `src/redux/api/` calls `baseApi.injectEndpoints(...)` and exports the generated hooks.
 - `baseQuery` sends `Authorization: Bearer <token>`. During the OTP, forgot-password and reset-password flows it also sends a `token` header, read from sessionStorage keys (`token`, `forgotPasswordToken`, `resetPasswordToken`, `signUpToken`).
-- On a 401, it calls `POST /auth/refresh-token` (cookie-based), stores the new access token and retries the request. If the refresh fails, it logs the user out.
+- Token refresh lives in `src/redux/api/sessionRefresh.ts` and is shared by the base query and the socket. The refresh token is an httpOnly cookie on the API's domain. Two consequences:
+  - Every request must use `credentials: "include"`, which is set on `fetchBaseQuery`.
+  - Refresh can only happen in the browser. Next.js middleware never sees that cookie.
+- On a 401 from a request that carried an access token, the base query refreshes and retries once. Login, refresh, forgot/reset password and `/otp/` routes are excluded. Concurrent 401s share one refresh. A second 401 is treated as a permission error, not an expiry.
+- If the refresh is rejected, the user is logged out and redirected to `/login?callbackUrl=...`, which shows "session expired" once.
+- Never call refresh when no token is stored. The cookie outlives logout and would sign the previous user back in.
+- `SocketProvider` rebuilds the socket whenever the token changes. If the server rejects a connection because the token expired, it triggers a refresh.
+- Local dev: open the dashboard on the same host as the API (`NEXT_PUBLIC_BASE_URL`). If the hosts differ, the browser won't send the refresh cookie, and refresh returns 400.
 - Cache invalidation uses tags from `src/redux/tagTypes.ts`. A new tag must be added to both the `tagTypes` object and the `tagTypesList` array.
 - List responses have the shape `{ data, meta }` (`IApiResponse` in `src/types/api-response.ts`). Components read `data?.data`.
 - To show an API error to the user, use `errorModification(error)` (`src/lib/errors/errorModification.ts`) to get a readable message, then pass it to a sonner `toast`.

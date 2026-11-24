@@ -1,6 +1,7 @@
 // components/listings/PendingApprovalQueue.tsx
 "use client";
 
+import ImageWithFallback from "@/components/shared/image/ImageWithFallback";
 import { AlertCircleIcon, CalendarIcon, DockIcon, ImageIcon } from "lucide-react";
 
 interface PendingListing {
@@ -103,9 +104,11 @@ function PendingApprovalCard({ listing }: { listing: PendingListing }) {
   return (
     <div className="flex flex-col gap-4 rounded-2xl bg-gray-50 p-4 sm:flex-row sm:items-center">
       {/* Image */}
-      <img
+      <ImageWithFallback
         src={listing.imageUrl}
         alt={listing.title}
+        width={128}
+        height={96}
         className="h-24 w-full shrink-0 rounded-xl object-cover sm:h-24 sm:w-32"
       />
 

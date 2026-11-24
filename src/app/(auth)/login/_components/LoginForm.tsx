@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,6 +16,10 @@ import { toast } from "sonner";
 import { errorModification } from "@/lib/errors/errorModification";
 import { LoaderIcon } from "@/icon";
 import useFcmToken from "@/hooks/useFcmToken";
+import {
+  consumeSessionExpiredFlag,
+  SESSION_EXPIRED_MESSAGE,
+} from "@/redux/api/sessionRefresh";
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -36,6 +40,11 @@ export default function LoginForm() {
   const { getFcmToken } = useFcmToken();
 
   const callbackUrl = useSearchParams().get("callbackUrl");
+
+  // Shown once after an expired session sent the user here.
+  useEffect(() => {
+    if (consumeSessionExpiredFlag()) toast.warning(SESSION_EXPIRED_MESSAGE);
+  }, []);
 
   const {
     register,
