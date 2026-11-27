@@ -1,7 +1,10 @@
 "use client";
 import { useMemo, useState } from "react";
 import { OffersSentHeader } from "./OffersSentHeader";
-import { ConsolidatedSentOfferCard } from "./ConsolidatedSentOfferCard";
+import {
+  ConsolidatedSentOfferCard,
+  OfferRoundComparison,
+} from "./ConsolidatedSentOfferCard";
 import { IPropertyResponse, IUser } from "@/types";
 import {
   ConsolidatedOfferData,
@@ -57,13 +60,27 @@ export function OffersSent({
     [history],
   );
 
-  const selectedTerms =
-    history.find((entry) => entry.round === selectedRound) ??
-    history[history.length - 1];
+  const foundIndex = history.findIndex((entry) => entry.round === selectedRound);
+  const selectedIndex = foundIndex === -1 ? history.length - 1 : foundIndex;
+  const selectedTerms = history[selectedIndex];
+  // History is oldest first, so the entry before the selected one is the
+  // round this counter offer answered.
+  const previousTerms = selectedIndex > 0 ? history[selectedIndex - 1] : undefined;
 
   const selectedOfferData: ConsolidatedOfferData = useMemo(
     () => mapTermsToConsolidatedOfferData(selectedTerms, supportingDocuments),
     [selectedTerms, supportingDocuments],
+  );
+
+  const comparison: OfferRoundComparison | undefined = useMemo(
+    () =>
+      previousTerms
+        ? {
+            previous: mapTermsToConsolidatedOfferData(previousTerms),
+            previousRound: previousTerms.round,
+          }
+        : undefined,
+    [previousTerms],
   );
 
   return (
@@ -87,6 +104,7 @@ export function OffersSent({
         seller={seller}
         buyer={buyer}
         data={selectedOfferData}
+        comparison={comparison}
         onEditOfferDetails={onEditOfferDetails}
       />
     </div>

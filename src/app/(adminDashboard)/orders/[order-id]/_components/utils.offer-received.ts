@@ -209,6 +209,94 @@ export function mapTermsToConsolidatedOfferData(
   };
 }
 
+// ---------------------------------------------------------------------------
+// Counter-offer diff: compares two rounds by the text the card displays, so a
+// field counts as changed only when what the admin sees is different.
+// ---------------------------------------------------------------------------
+
+export const EMPTY_TERM = "—";
+
+const capitalize = (value?: string) =>
+  value ? value.charAt(0).toUpperCase() + value.slice(1) : value;
+
+export function getOfferDisplayValues(data: ConsolidatedOfferData) {
+  const hasAgent = Boolean(data.agent?.hasAgent);
+  return {
+    offerAmount: formatCurrency(data.offerAmount) || EMPTY_TERM,
+    earnestMoney: formatCurrency(data.earnestMoney) || EMPTY_TERM,
+    financingType: data.financingType || EMPTY_TERM,
+    financingTerms: data.financingTerms || EMPTY_TERM,
+    closingCosts: data.closingCosts || EMPTY_TERM,
+    includedItems: data.personalProperty.included.join(", ") || EMPTY_TERM,
+    itemsToRemove:
+      splitToList(data.personalProperty.itemsToRemove).join(", ") || EMPTY_TERM,
+    inspection: contingencyValue(data.inspection),
+    appraisal: contingencyValue(data.appraisal),
+    hasAgent: hasAgent ? "Yes" : "No",
+    // Agent details only count while the buyer has an agent.
+    agentName: (hasAgent && data.agent?.agentName) || EMPTY_TERM,
+    brokerageName: (hasAgent && data.agent?.brokerageName) || EMPTY_TERM,
+    commission: (hasAgent && data.agent?.commission) || EMPTY_TERM,
+    paidBy: (hasAgent && capitalize(data.agent?.paidBy)) || EMPTY_TERM,
+    titleCompany: data.closingTerms.titleCompany || EMPTY_TERM,
+    closingDate: data.closingTerms.closingDate || EMPTY_TERM,
+    possession: data.closingTerms.possession || EMPTY_TERM,
+    sellerPostClosingDays:
+      data.closingTerms.sellerPostClosingDays?.toString() ?? EMPTY_TERM,
+    additionalTerms: data.additionalTerms || EMPTY_TERM,
+  };
+}
+
+export type OfferDisplayValues = ReturnType<typeof getOfferDisplayValues>;
+export type OfferDiffKey = keyof OfferDisplayValues;
+
+export const OFFER_DIFF_LABELS: Record<OfferDiffKey, string> = {
+  offerAmount: "Offer amount",
+  earnestMoney: "Earnest money",
+  financingType: "Financing type",
+  financingTerms: "Financing terms",
+  closingCosts: "Closing costs",
+  includedItems: "Included items",
+  itemsToRemove: "Items to be removed",
+  inspection: "Inspection",
+  appraisal: "Appraisal",
+  hasAgent: "Working with an agent",
+  agentName: "Agent name",
+  brokerageName: "Brokerage name",
+  commission: "Commission",
+  paidBy: "Commission paid by",
+  titleCompany: "Title company",
+  closingDate: "Closing date",
+  possession: "Possession",
+  sellerPostClosingDays: "Seller post-closing occupancy",
+  additionalTerms: "Additional terms",
+};
+
+/** Previous round's display value for every field that changed, keyed by field. */
+export function getOfferChanges(
+  current: OfferDisplayValues,
+  previous?: OfferDisplayValues,
+): Partial<Record<OfferDiffKey, string>> {
+  if (!previous) return {};
+  const changes: Partial<Record<OfferDiffKey, string>> = {};
+  (Object.keys(current) as OfferDiffKey[]).forEach((key) => {
+    if (current[key] !== previous[key]) changes[key] = previous[key];
+  });
+  return changes;
+}
+
+/** Items kept, added and dropped between two rounds, for pill lists. */
+export function diffItems(current: string[], previous?: string[]) {
+  if (!previous) {
+    return { items: current, added: new Set<string>(), removed: [] as string[] };
+  }
+  return {
+    items: current,
+    added: new Set(current.filter((item) => !previous.includes(item))),
+    removed: previous.filter((item) => !current.includes(item)),
+  };
+}
+
 export const OFFER_STATUS = {
   pending: "pending",
   countered: "countered",
